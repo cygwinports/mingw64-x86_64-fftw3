@@ -1,0 +1,53 @@
+CROSS_HOST="x86_64-w64-mingw32"
+inherit cross
+
+NAME="mingw64-x86_64-fftw3"
+VERSION=3.3.3
+RELEASE=1
+CATEGORY="Devel"
+SUMMARY="Discrete Fourier transform library for Win64 toolchain"
+DESCRIPTION="FFTW is a C subroutine library for computing the discrete Fourier
+transform (DFT) in one or more dimensions, of arbitrary input size, and of both
+real and complex data."
+HOMEPAGE="http://www.fftw.org/"
+SRC_URI="http://www.fftw.org/fftw-${VERSION}.tar.gz"
+SRC_DIR="fftw-${VERSION}"
+PATCH_URI="3.3.3-quad-no-undefined.patch"
+
+precisions=(single double long-double quad-precision)
+
+src_compile() {
+	cd ${S}
+	cygautoreconf
+
+	for prec in ${precisions[*]}
+	do
+		case $prec in
+		quad*)
+			gcclibdir=$(${CC} -print-file-name=libquadmath.dll.a)
+			LDFLAGS+=" -L${gcclibdir%/*}"
+			;;
+		esac
+
+		mkdir -p ${B}/$prec
+		cd ${B}/$prec
+		cygconf --enable-$prec --disable-threads
+		cygmake
+	done
+}
+
+src_test() {
+	for prec in ${precisions[*]}
+	do
+		cd ${B}/$prec/tests
+		cygtest
+	done
+}
+
+src_install() {
+	for prec in ${precisions[*]}
+	do
+		cd ${B}/$prec
+		cyginstall bin_PROGRAMS= bin_SCRIPTS= dist_man_MANS= INFO_DEPS=
+	done
+}
