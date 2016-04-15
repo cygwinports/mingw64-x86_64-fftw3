@@ -2,7 +2,7 @@ CROSS_HOST="x86_64-w64-mingw32"
 inherit cross
 
 NAME="mingw64-x86_64-fftw3"
-VERSION=3.3.3
+VERSION=3.3.4
 RELEASE=1
 CATEGORY="Devel"
 SUMMARY="Discrete Fourier transform library for Win64 toolchain"
@@ -12,7 +12,10 @@ real and complex data."
 HOMEPAGE="http://www.fftw.org/"
 SRC_URI="http://www.fftw.org/fftw-${VERSION}.tar.gz"
 SRC_DIR="fftw-${VERSION}"
-PATCH_URI="3.3.3-quad-no-undefined.patch"
+PATCH_URI="
+	3.3.4-no-undefined.patch
+	3.3.4-internal-dllexport.patch
+"
 
 precisions=(single double long-double quad-precision)
 
@@ -31,7 +34,7 @@ src_compile() {
 
 		mkdir -p ${B}/$prec
 		cd ${B}/$prec
-		cygconf --enable-$prec --disable-threads
+		cygconf --enable-$prec --enable-threads --enable-openmp
 		cygmake
 	done
 }

@@ -1,0 +1,253 @@
+These symbols are all required by the threaded libs.
+
+--- origsrc/fftw-3.3.4/dft/ct.h	2014-03-04 12:41:03.000000000 -0600
++++ src/fftw-3.3.4/dft/ct.h	2016-04-15 12:39:08.211651400 -0500
+@@ -52,12 +52,12 @@ struct ct_solver_s {
+      ct_force_vrecursion force_vrecursionp;
+ };
+ 
+-int X(ct_applicable)(const ct_solver *, const problem *, planner *);
++IFFTW_EXTERN int X(ct_applicable)(const ct_solver *, const problem *, planner *);
+ ct_solver *X(mksolver_ct)(size_t size, INT r, int dec, 
+ 			  ct_mkinferior mkcldw, 
+ 			  ct_force_vrecursion force_vrecursionp);
+-extern ct_solver *(*X(mksolver_ct_hook))(size_t, INT, int, 
+-					 ct_mkinferior, ct_force_vrecursion);
++IFFTW_EXTERN ct_solver *(*X(mksolver_ct_hook))(size_t, INT, int, 
++					       ct_mkinferior, ct_force_vrecursion);
+ 
+ void X(regsolver_ct_directw)(planner *plnr,
+      kdftw codelet, const ct_desc *desc, int dec);
+--- origsrc/fftw-3.3.4/dft/dft.h	2014-03-04 12:41:03.000000000 -0600
++++ src/fftw-3.3.4/dft/dft.h	2016-04-15 12:41:32.619488900 -0500
+@@ -38,13 +38,13 @@ typedef struct {
+ } problem_dft;
+ 
+ void X(dft_zerotens)(tensor *sz, R *ri, R *ii);
+-problem *X(mkproblem_dft)(const tensor *sz, const tensor *vecsz,
+-				R *ri, R *ii, R *ro, R *io);
+-problem *X(mkproblem_dft_d)(tensor *sz, tensor *vecsz,
+-			    R *ri, R *ii, R *ro, R *io);
++IFFTW_EXTERN problem *X(mkproblem_dft)(const tensor *sz, const tensor *vecsz,
++				       R *ri, R *ii, R *ro, R *io);
++IFFTW_EXTERN problem *X(mkproblem_dft_d)(tensor *sz, tensor *vecsz,
++					 R *ri, R *ii, R *ro, R *io);
+ 
+ /* solve.c: */
+-void X(dft_solve)(const plan *ego_, const problem *p_);
++IFFTW_EXTERN void X(dft_solve)(const plan *ego_, const problem *p_);
+ 
+ /* plan.c: */
+ typedef void (*dftapply) (const plan *ego, R *ri, R *ii, R *ro, R *io);
+@@ -54,7 +54,7 @@ typedef struct {
+      dftapply apply;
+ } plan_dft;
+ 
+-plan *X(mkplan_dft)(size_t size, const plan_adt *adt, dftapply apply);
++IFFTW_EXTERN plan *X(mkplan_dft)(size_t size, const plan_adt *adt, dftapply apply);
+ 
+ #define MKPLAN_DFT(type, adt, apply) \
+   (type *)X(mkplan_dft)(sizeof(type), adt, apply)
+--- origsrc/fftw-3.3.4/kernel/ifftw.h	2014-03-04 12:41:03.000000000 -0600
++++ src/fftw-3.3.4/kernel/ifftw.h	2016-04-15 12:39:27.887650000 -0500
+@@ -349,12 +349,12 @@ typedef struct {
+      double other;
+ } opcnt;
+ 
+-void X(ops_zero)(opcnt *dst);
++IFFTW_EXTERN void X(ops_zero)(opcnt *dst);
+ void X(ops_other)(INT o, opcnt *dst);
+ void X(ops_cpy)(const opcnt *src, opcnt *dst);
+ 
+ void X(ops_add)(const opcnt *a, const opcnt *b, opcnt *dst);
+-void X(ops_add2)(const opcnt *a, opcnt *dst);
++IFFTW_EXTERN void X(ops_add2)(const opcnt *a, opcnt *dst);
+ 
+ /* dst = m * a + b */
+ void X(ops_madd)(INT m, const opcnt *a, const opcnt *b, opcnt *dst);
+@@ -365,7 +365,7 @@ void X(ops_madd2)(INT m, const opcnt *a,
+ 
+ /*-----------------------------------------------------------------------*/
+ /* minmax.c: */
+-INT X(imax)(INT a, INT b);
++IFFTW_EXTERN INT X(imax)(INT a, INT b);
+ INT X(imin)(INT a, INT b);
+ 
+ /*-----------------------------------------------------------------------*/
+@@ -440,9 +440,9 @@ typedef enum { INPLACE_IS, INPLACE_OS }
+ 
+ tensor *X(mktensor)(int rnk);
+ tensor *X(mktensor_0d)(void);
+-tensor *X(mktensor_1d)(INT n, INT is, INT os);
+-tensor *X(mktensor_2d)(INT n0, INT is0, INT os0,
+-		       INT n1, INT is1, INT os1);
++IFFTW_EXTERN tensor *X(mktensor_1d)(INT n, INT is, INT os);
++IFFTW_EXTERN tensor *X(mktensor_2d)(INT n0, INT is0, INT os0,
++				    INT n1, INT is1, INT os1);
+ tensor *X(mktensor_3d)(INT n0, INT is0, INT os0,
+ 		       INT n1, INT is1, INT os1,
+ 		       INT n2, INT is2, INT os2);
+@@ -465,7 +465,7 @@ int X(tensor_inplace_strides)(const tens
+ int X(tensor_inplace_strides2)(const tensor *a, const tensor *b);
+ int X(tensor_strides_decrease)(const tensor *sz, const tensor *vecsz,
+                                inplace_kind k);
+-tensor *X(tensor_copy)(const tensor *sz);
++IFFTW_EXTERN tensor *X(tensor_copy)(const tensor *sz);
+ int X(tensor_kosherp)(const tensor *x);
+ 
+ tensor *X(tensor_copy_inplace)(const tensor *sz, inplace_kind k);
+@@ -475,8 +475,8 @@ tensor *X(tensor_compress)(const tensor
+ tensor *X(tensor_compress_contiguous)(const tensor *sz);
+ tensor *X(tensor_append)(const tensor *a, const tensor *b);
+ void X(tensor_split)(const tensor *sz, tensor **a, int a_rnk, tensor **b);
+-int X(tensor_tornk1)(const tensor *t, INT *n, INT *is, INT *os);
+-void X(tensor_destroy)(tensor *sz);
++IFFTW_EXTERN int X(tensor_tornk1)(const tensor *t, INT *n, INT *is, INT *os);
++IFFTW_EXTERN void X(tensor_destroy)(tensor *sz);
+ void X(tensor_destroy2)(tensor *a, tensor *b);
+ void X(tensor_destroy4)(tensor *a, tensor *b, tensor *c, tensor *d);
+ void X(tensor_print)(const tensor *sz, printer *p);
+@@ -573,7 +573,7 @@ struct plan_s {
+ };
+ 
+ plan *X(mkplan)(size_t size, const plan_adt *adt);
+-void X(plan_destroy_internal)(plan *ego);
++IFFTW_EXTERN void X(plan_destroy_internal)(plan *ego);
+ IFFTW_EXTERN void X(plan_awake)(plan *ego, enum wakefulness wakefulness);
+ void X(plan_null_destroy)(plan *ego);
+ 
+@@ -590,10 +590,10 @@ struct solver_s {
+      int refcnt;
+ };
+ 
+-solver *X(mksolver)(size_t size, const solver_adt *adt);
++IFFTW_EXTERN solver *X(mksolver)(size_t size, const solver_adt *adt);
+ void X(solver_use)(solver *ego);
+ void X(solver_destroy)(solver *ego);
+-void X(solver_register)(planner *plnr, solver *s);
++IFFTW_EXTERN void X(solver_register)(planner *plnr, solver *s);
+ 
+ /* shorthand */
+ #define MKSOLVER(type, adt) (type *)X(mksolver)(sizeof(type), adt)
+@@ -807,7 +807,7 @@ void X(planner_destroy)(planner *ego);
+ 
+ 
+ /* make plan, destroy problem */
+-plan *X(mkplan_d)(planner *ego, problem *p);
++IFFTW_EXTERN plan *X(mkplan_d)(planner *ego, problem *p);
+ plan *X(mkplan_f_d)(planner *ego, problem *p, 
+ 		    unsigned l_set, unsigned u_set, unsigned u_reset);
+ 
+@@ -868,14 +868,14 @@ typedef INT stride;
+ 
+ struct solvtab_s { void (*reg)(planner *); const char *reg_nam; };
+ typedef struct solvtab_s solvtab[];
+-void X(solvtab_exec)(const solvtab tbl, planner *p);
++IFFTW_EXTERN void X(solvtab_exec)(const solvtab tbl, planner *p);
+ #define SOLVTAB(s) { s, STRINGIZE(s) }
+ #define SOLVTAB_END { 0, 0 }
+ 
+ /*-----------------------------------------------------------------------*/
+ /* pickdim.c */
+-int X(pickdim)(int which_dim, const int *buddies, int nbuddies,
+-	       const tensor *sz, int oop, int *dp);
++IFFTW_EXTERN int X(pickdim)(int which_dim, const int *buddies, int nbuddies,
++			    const tensor *sz, int oop, int *dp);
+ 
+ /*-----------------------------------------------------------------------*/
+ /* twiddle.c */
+@@ -943,7 +943,7 @@ int X(is_prime)(INT n);
+ INT X(next_prime)(INT n);
+ int X(factors_into)(INT n, const INT *primes);
+ int X(factors_into_small_primes)(INT n);
+-INT X(choose_radix)(INT r, INT n);
++IFFTW_EXTERN INT X(choose_radix)(INT r, INT n);
+ INT X(isqrt)(INT n);
+ INT X(modulo)(INT a, INT n);
+ 
+--- origsrc/fftw-3.3.4/rdft/hc2hc.h	2014-03-04 12:41:03.000000000 -0600
++++ src/fftw-3.3.4/rdft/hc2hc.h	2016-04-15 12:42:28.511086200 -0500
+@@ -46,9 +46,9 @@ struct hc2hc_solver_s {
+ };
+ 
+ hc2hc_solver *X(mksolver_hc2hc)(size_t size, INT r, hc2hc_mkinferior mkcldw);
+-extern hc2hc_solver *(*X(mksolver_hc2hc_hook))(size_t, INT, hc2hc_mkinferior);
++IFFTW_EXTERN hc2hc_solver *(*X(mksolver_hc2hc_hook))(size_t, INT, hc2hc_mkinferior);
+ 
+ void X(regsolver_hc2hc_direct)(planner *plnr, khc2hc codelet, 
+ 			       const hc2hc_desc *desc);
+ 
+-int X(hc2hc_applicable)(const hc2hc_solver *, const problem *, planner *);
++IFFTW_EXTERN int X(hc2hc_applicable)(const hc2hc_solver *, const problem *, planner *);
+--- origsrc/fftw-3.3.4/rdft/rdft.h	2014-03-04 12:41:03.000000000 -0600
++++ src/fftw-3.3.4/rdft/rdft.h	2016-04-15 12:41:23.315807500 -0500
+@@ -44,10 +44,10 @@ typedef struct {
+ } problem_rdft;
+ 
+ void X(rdft_zerotens)(tensor *sz, R *I);
+-problem *X(mkproblem_rdft)(const tensor *sz, const tensor *vecsz,
+-			   R *I, R *O, const rdft_kind *kind);
+-problem *X(mkproblem_rdft_d)(tensor *sz, tensor *vecsz,
+-			     R *I, R *O, const rdft_kind *kind);
++IFFTW_EXTERN problem *X(mkproblem_rdft)(const tensor *sz, const tensor *vecsz,
++					R *I, R *O, const rdft_kind *kind);
++IFFTW_EXTERN problem *X(mkproblem_rdft_d)(tensor *sz, tensor *vecsz,
++					  R *I, R *O, const rdft_kind *kind);
+ problem *X(mkproblem_rdft_0_d)(tensor *vecsz, R *I, R *O);
+ problem *X(mkproblem_rdft_1)(const tensor *sz, const tensor *vecsz,
+ 			     R *I, R *O, rdft_kind kind);
+@@ -57,7 +57,7 @@ problem *X(mkproblem_rdft_1_d)(tensor *s
+ const char *X(rdft_kind_str)(rdft_kind kind);
+ 
+ /* solve.c: */
+-void X(rdft_solve)(const plan *ego_, const problem *p_);
++IFFTW_EXTERN void X(rdft_solve)(const plan *ego_, const problem *p_);
+ 
+ /* plan.c: */
+ typedef void (*rdftapply) (const plan *ego, R *I, R *O);
+@@ -67,7 +67,7 @@ typedef struct {
+      rdftapply apply;
+ } plan_rdft;
+ 
+-plan *X(mkplan_rdft)(size_t size, const plan_adt *adt, rdftapply apply);
++IFFTW_EXTERN plan *X(mkplan_rdft)(size_t size, const plan_adt *adt, rdftapply apply);
+ 
+ #define MKPLAN_RDFT(type, adt, apply) \
+   (type *)X(mkplan_rdft)(sizeof(type), adt, apply)
+@@ -123,22 +123,22 @@ typedef struct {
+      rdft_kind kind; /* assert(kind < DHT) */
+ } problem_rdft2;
+ 
+-problem *X(mkproblem_rdft2)(const tensor *sz, const tensor *vecsz,
+-			    R *r0, R *r1, R *cr, R *ci, rdft_kind kind);
++IFFTW_EXTERN problem *X(mkproblem_rdft2)(const tensor *sz, const tensor *vecsz,
++					 R *r0, R *r1, R *cr, R *ci, rdft_kind kind);
+ problem *X(mkproblem_rdft2_d)(tensor *sz, tensor *vecsz,
+ 			      R *r0, R *r1, R *cr, R *ci, rdft_kind kind);
+ problem *X(mkproblem_rdft2_d_3pointers)(tensor *sz, tensor *vecsz,
+ 					R *r, R *cr, R *ci, rdft_kind kind);
+-int X(rdft2_inplace_strides)(const problem_rdft2 *p, int vdim);
++IFFTW_EXTERN int X(rdft2_inplace_strides)(const problem_rdft2 *p, int vdim);
+ INT X(rdft2_tensor_max_index)(const tensor *sz, rdft_kind k);
+-void X(rdft2_strides)(rdft_kind kind, const iodim *d, INT *rs, INT *cs);
++IFFTW_EXTERN void X(rdft2_strides)(rdft_kind kind, const iodim *d, INT *rs, INT *cs);
+ INT X(rdft2_complex_n)(INT real_n, rdft_kind kind);
+ 
+ /* verify.c: */
+ void X(rdft2_verify)(plan *pln, const problem_rdft2 *p, int rounds);
+ 
+ /* solve.c: */
+-void X(rdft2_solve)(const plan *ego_, const problem *p_);
++IFFTW_EXTERN void X(rdft2_solve)(const plan *ego_, const problem *p_);
+ 
+ /* plan.c: */
+ typedef void (*rdft2apply) (const plan *ego, R *r0, R *r1, R *cr, R *ci);
+@@ -148,7 +148,7 @@ typedef struct {
+      rdft2apply apply;
+ } plan_rdft2;
+ 
+-plan *X(mkplan_rdft2)(size_t size, const plan_adt *adt, rdft2apply apply);
++IFFTW_EXTERN plan *X(mkplan_rdft2)(size_t size, const plan_adt *adt, rdft2apply apply);
+ 
+ #define MKPLAN_RDFT2(type, adt, apply) \
+   (type *)X(mkplan_rdft2)(sizeof(type), adt, apply)
