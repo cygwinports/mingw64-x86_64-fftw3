@@ -1,5 +1,16 @@
 These symbols are all required by the threaded libs.
 
+--- origsrc/fftw-3.3.5/api/api.h	2016-07-30 14:21:09.000000000 -0500
++++ src/fftw-3.3.5/api/api.h	2016-08-01 21:37:05.441096800 -0500
+@@ -108,7 +108,7 @@ rdft_kind *X(map_r2r_kind)(int rank, con
+ 
+ typedef void (*planner_hook_t)(void);
+                                                      
+-void X(set_planner_hooks)(planner_hook_t before, planner_hook_t after);
++IFFTW_EXTERN void X(set_planner_hooks)(planner_hook_t before, planner_hook_t after);
+ 
+ #ifdef __cplusplus
+ }  /* extern "C" */
 --- origsrc/fftw-3.3.4/dft/ct.h	2014-03-04 12:41:03.000000000 -0600
 +++ src/fftw-3.3.4/dft/ct.h	2016-04-15 12:39:08.211651400 -0500
 @@ -52,12 +52,12 @@ struct ct_solver_s {
@@ -149,9 +160,9 @@ These symbols are all required by the threaded libs.
  
  /*-----------------------------------------------------------------------*/
  /* pickdim.c */
--int X(pickdim)(int which_dim, const int *buddies, int nbuddies,
+-int X(pickdim)(int which_dim, const int *buddies, size_t nbuddies,
 -	       const tensor *sz, int oop, int *dp);
-+IFFTW_EXTERN int X(pickdim)(int which_dim, const int *buddies, int nbuddies,
++IFFTW_EXTERN int X(pickdim)(int which_dim, const int *buddies, size_t nbuddies,
 +			    const tensor *sz, int oop, int *dp);
  
  /*-----------------------------------------------------------------------*/
